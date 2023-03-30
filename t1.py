@@ -136,3 +136,17 @@ else:
     f.write(request.content)
 
 from helper_functions import plot_predictions, plot_decision_boundary
+
+def plotDecisions():
+    plt.figure(figsize=(12,6))
+    #nrows #ncols 
+    plt.subplot(1,2,1)
+    plt.title("Train")
+    plot_decision_boundary(model1_0,X_train,y_train)
+    plt.subplot(1,2,2)
+    plt.title("test")
+    plot_decision_boundary(model1_0,X_test,y_test)
+    plt.show()
+plotDecisions()
+
+## 
