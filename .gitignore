@@ -4,3 +4,6 @@ candidates.csv
 Deep-Regression.ipynb
 tosel.py
 Unconfirmed 162458.crdownload
+
+
+*.pyc
