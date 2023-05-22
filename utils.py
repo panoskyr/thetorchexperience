@@ -11,7 +11,8 @@ def show_image(image):
 
 
 def show_image_w_label(image, label,cmap='gray'):
-    plt.imshow(image, cmap=cmap)
+    #image[0] is to get the values from the tensor
+    plt.imshow(image[0], cmap=cmap)
     plt.axis('off')
     plt.title(label)
     plt.show()
