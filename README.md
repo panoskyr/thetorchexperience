@@ -1,7 +1,8 @@
-## t1
-![Linear decision boundary](linear_decision_boundary.jpeg)
- 
- This plot illustrates the decision boundary when using linear activation functions. To be able to learn non linear functions we need non linear activation functions.
+# MURA
 
+
+# Coding hindrances
+if using torchvision.io.read_image one should not use ToTensor as a transformation
+The pic is already read as a Tensor
 
  
