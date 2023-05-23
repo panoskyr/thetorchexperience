@@ -3,6 +3,8 @@ from PIL import Image
 import skimage
 from skimage.color import gray2rgb
 from torchvision import transforms,io
+import torchvision
+import torch
 class NoneTransform:
     def __call__(self, im):
         return im
@@ -51,4 +53,42 @@ class HumerusDataset(Dataset):
         if self.transform is None: 
             self.transform=NoneTransform()
         img = self.transform(img)
+        img=torchvision.transforms.functional.convert_image_dtype(img,torch.float32)
+        print("img shape:",img.shape,"img dtype:",img.dtype)
+        print("label shape:",self.labels.iloc[idx].shape,"label dtype:",self.labels.iloc[idx].dtype)
         return img, self.labels.iloc[idx]
+    
+
+#simpleflatten +2layers NN +sigmoid
+class BaselineNN(torch.nn.Module):
+    def __init__(self,input_size,hidden_size,output_size):
+        super().__init__()
+
+        self.input_size=input_size
+        self.hidden_size=hidden_size
+        self.output_size=output_size
+
+        self.flatten=torch.nn.Flatten()
+        self.nn1=torch.nn.Linear(self.input_size,self.hidden_size)
+        self.nn2=torch.nn.Linear(self.hidden_size,self.output_size)
+
+
+    def forward(self,x):
+        print("pre flatten layer:", x.shape,x.dtype)
+        x=self.flatten(x)
+        print("post flatten layer:", x.shape, x.dtype)
+        print(self.nn1.weight.shape,self.nn1.weight.dtype)
+        x=self.nn1(x)
+        print("post nn1 layer:", x.shape,x.dtype)
+        x=torch.nn.functional.relu(x)
+        print("post relu layer:", x.shape,x.dtype)
+        x=self.nn2(x)
+        print("post nn2 layer:", x.shape,x.dtype)
+        output=torch.nn.functional.sigmoid(x)
+        print("post sigmoid layer:", output.shape,output.dtype)
+        print("output:",output)
+        return torch.squeeze(output)
+        
+    def reset_parameters(self):
+        self.nn1.reset_parameters()
+        self.nn2.reset_parameters()
