@@ -54,8 +54,8 @@ class HumerusDataset(Dataset):
             self.transform=NoneTransform()
         img = self.transform(img)
         img=torchvision.transforms.functional.convert_image_dtype(img,torch.float32)
-        print("img shape:",img.shape,"img dtype:",img.dtype)
-        print("label shape:",self.labels.iloc[idx].shape,"label dtype:",self.labels.iloc[idx].dtype)
+        #print("img shape:",img.shape,"img dtype:",img.dtype)
+        #print("label shape:",self.labels.iloc[idx].shape,"label dtype:",self.labels.iloc[idx].dtype)
         return img, self.labels.iloc[idx]
     
 
@@ -74,19 +74,19 @@ class BaselineNN(torch.nn.Module):
 
 
     def forward(self,x):
-        print("pre flatten layer:", x.shape,x.dtype)
+        #print("pre flatten layer:", x.shape,x.dtype)
         x=self.flatten(x)
-        print("post flatten layer:", x.shape, x.dtype)
-        print(self.nn1.weight.shape,self.nn1.weight.dtype)
+        #print("post flatten layer:", x.shape, x.dtype)
+        #print(self.nn1.weight.shape,self.nn1.weight.dtype)
         x=self.nn1(x)
-        print("post nn1 layer:", x.shape,x.dtype)
+        #print("post nn1 layer:", x.shape,x.dtype)
         x=torch.nn.functional.relu(x)
-        print("post relu layer:", x.shape,x.dtype)
+        #print("post relu layer:", x.shape,x.dtype)
         x=self.nn2(x)
-        print("post nn2 layer:", x.shape,x.dtype)
+        #print("post nn2 layer:", x.shape,x.dtype)
         output=torch.nn.functional.sigmoid(x)
-        print("post sigmoid layer:", output.shape,output.dtype)
-        print("output:",output)
+        #print("post sigmoid layer:", output.shape,output.dtype)
+        #print("output:",output)
         return torch.squeeze(output)
         
     def reset_parameters(self):
