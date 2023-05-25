@@ -26,8 +26,11 @@ class Rescale(object):
             image=skimage.transform.resize(image,(new_height,new_width))
         return image
 
+#only available in functional so write class to use in transforms compose
 
-
+class HistEqualizationTransform:
+    def __call__(self, im):
+        return torchvision.transforms.functional.equalize(im)
 #use torchvision.io class ,all images are read as tensors and rgb values
 #returns tensor of size (3, height, width)
 #returns label of 0,1
@@ -92,3 +95,6 @@ class BaselineNN(torch.nn.Module):
     def reset_parameters(self):
         self.nn1.reset_parameters()
         self.nn2.reset_parameters()
+
+
+
