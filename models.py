@@ -98,3 +98,13 @@ class BaselineNN(torch.nn.Module):
 
 
 
+class myEnsemble(torch.nn.Module):
+    def __init__(self, modelA, modelB, nb_classes=2):
+        super(myEnsemble, self).__init__()
+        self.modelA = modelA
+        self.modelB = modelB
+        # Remove last linear layer
+        self.modelA.fc = None
+        self.modelB.fc = None
+        # Create new classifier
+        self.classifier = torch.nn.Linear(2048+512, nb_classes)

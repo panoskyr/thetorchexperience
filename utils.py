@@ -129,6 +129,8 @@ def accuracy_fn(y_true, y_pred):
     Returns:
         [torch.float]: Accuracy value between y_true and y_pred, e.g. 78.45
     """
+    print(f"y_true: {y_true.shape}, y_pred: {y_pred.shape}")
+    print(y_true[:10], y_pred[:10] )
     correct = torch.eq(y_true, y_pred).sum().item()
     acc = (correct / len(y_pred)) * 100
     return acc
@@ -193,7 +195,8 @@ def plot_loss_curves(results):
 from typing import List
 import torchvision
 
-
+import PIL.Image as Image
+from typing import List, Tuple
 def pred_and_plot_image(
     model: torch.nn.Module,
     image_path: str,
