@@ -20,6 +20,15 @@ The pic is already read as a Tensor
 
 3. [Transfer Learning from resnet ](https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html#finetuning-the-convnet)
 
+# TODO
+## Panagiotis
+Ensemble class for two already trained models
+
+
+
+## Nikos
+Description of Multiclass problem that makis said in class
+
 
 
 # Experimental Results
