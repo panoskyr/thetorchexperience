@@ -7,6 +7,7 @@ The pic is already read as a Tensor
 2. loading the image with pytorch vision produces a tensor of uint8 but the dtype=float32 for all operations .needed to find a way to convert
 3. used Tensor.type_as(outputs) in train function to convert from int64 to float32 to pass into the loss function
 4. Wrote custom class to use functional transforms
+5. Used a Linear Layer with 1 output on top of the resnet model. Also used BCEWithLogitsLoss as a loss function because the sigmoid is not apllied on the linear level. 
 
 
 
