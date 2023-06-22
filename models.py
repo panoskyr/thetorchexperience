@@ -61,6 +61,81 @@ class HumerusDataset(Dataset):
         #print("label shape:",self.labels.iloc[idx].shape,"label dtype:",self.labels.iloc[idx].dtype)
         return img, self.labels.iloc[idx]
     
+from torchvision.models import ResNet18_Weights
+from torch.utils.data import Dataset, DataLoader
+from PIL import Image
+class class6_Dataset(Dataset):
+    def __init__(self, df, transform=None):
+        self.df = df
+        if self.transform is None:
+            self.transform = ResNet18_Weights.DEFAULT.transforms()
+        else:
+            self.transform = transform
+        #mapping alphabetically
+        self.labels = self.df['Bone'].map({
+            'XR_ELBOW': 0,
+            'XR_FINGER': 1,
+            'XR_FOREARM': 2,
+            'XR_HAND': 3,
+            'XR_HUMERUS': 4,
+            'XR_SHOULDER': 5,
+            'XR_WRIST': 6
+        })
+        
+    def __len__(self):
+        return len(self.df)
+
+    def __getitem__(self, idx):
+        path=self.df['path'].iloc[idx]
+        pil_img=Image.open(path).convert('RGB')
+        #print("pil_img shape:",pil_img.size,"pil_img mode:",pil_img.mode)
+        img=self.transform(pil_img)
+        img=torchvision.transforms.functional.convert_image_dtype(img,torch.float32)
+        return img, self.labels.iloc[idx]
+
+
+# a class that will train a neural network with a layer that will distinguish the type of images and 
+# with the resnet unfrozen
+# then we will fit a new linear head to the resnet and train it on all images with the new head
+class ResnetTransfer(torch.nn.Module):
+    def __init__(self,train_resnet):
+        super().__init__()
+
+        # first training pass with resnet unfrozen
+        # to take info about classes
+        if train_resnet==True:
+            # initialize with pretrained weights
+            weights=torchvision.models.ResNet18_Weights.DEFAULT
+            resnet18 = torchvision.models.resnet18(weights=weights)
+            self.resnet=resnet18
+            # allow training of parameters
+            for param in self.resnet.parameters():
+                param.requires_grad=True
+
+            #add a head to the resnet that outputs 7 class probabilities
+            self.resnet.fc=torch.nn.Linear(self.resnet.fc.in_features,7)
+            for param in self.resnet.fc.parameters():
+                param.requires_grad=True
+        else:
+            #we keep the previous training of resnet
+            # and add a new head that will output 1 class probability
+            for param in self.resnet.parameters():
+                param.requires_grad=False
+            # the new head will be trained from scratch
+            self.resnet.fc=torch.nn.Linear(self.resnet.fc.in_features,1)
+
+        self.softmax=torch.nn.Softmax(dim=1)
+    def forward(self, x):
+        x=self.resnet(x)
+        x=self.softmax(x)
+        return x
+    
+
+    def __str__(self):
+        return f"ResnetTransfer(frozen={self.train_resnet}, output_size={self.resnet.fc.out_features})"
+
+
+
 
 #simpleflatten +2layers NN +sigmoid
 class BaselineNN(torch.nn.Module):

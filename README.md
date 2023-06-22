@@ -18,11 +18,12 @@ The pic is already read as a Tensor
 
 2. [How to use transfer learning with alex net](https://github.com/madsendennis/notebooks/blob/master/pytorch/3_PyTorch_Transfer_learning.ipynb)
 
-3. [Transfer Learning from resnet ](https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html#finetuning-the-convnet)
+3. [Transfer Learning from resnet ](https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html#finetuning-the-convnet), https://pytorch.org/vision/main/models/generated/torchvision.models.resnet18.html
 
 # TODO
 ## Panagiotis
-Ensemble class for two already trained models
+Do we need weighted Accuracy even when having weighted loss?
+
 
 
 
