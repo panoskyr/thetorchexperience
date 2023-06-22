@@ -5,6 +5,8 @@ from skimage.color import gray2rgb
 from torchvision import transforms,io
 import torchvision
 import torch
+from torch.nn import Sigmoid
+
 class NoneTransform:
     def __call__(self, im):
         return im
@@ -98,38 +100,51 @@ class class6_Dataset(Dataset):
 # with the resnet unfrozen
 # then we will fit a new linear head to the resnet and train it on all images with the new head
 class ResnetTransfer(torch.nn.Module):
-    def __init__(self,train_resnet):
+    def __init__(self, train_resnet=True):
         super().__init__()
+
+        self.train_resnet = train_resnet
 
         # first training pass with resnet unfrozen
         # to take info about classes
-        if train_resnet==True:
-            # initialize with pretrained weights
-            weights=torchvision.models.ResNet18_Weights.DEFAULT
-            resnet18 = torchvision.models.resnet18(weights=weights)
-            self.resnet=resnet18
-            # allow training of parameters
-            for param in self.resnet.parameters():
-                param.requires_grad=True
+        # initialize with pretrained weights
+        weights=torchvision.models.ResNet18_Weights.DEFAULT
+        resnet18 = torchvision.models.resnet18(weights=weights)
+        self.resnet=resnet18
+        # allow training of parameters
+        for param in self.resnet.parameters():
+            param.requires_grad=True
 
-            #add a head to the resnet that outputs 7 class probabilities
-            self.resnet.fc=torch.nn.Linear(self.resnet.fc.in_features,7)
-            for param in self.resnet.fc.parameters():
-                param.requires_grad=True
+        #add a head to the resnet that outputs 7 class probabilities
+        self.resnet.fc=torch.nn.Linear(self.resnet.fc.in_features,7)
+        for param in self.resnet.fc.parameters():
+            param.requires_grad=True
+            
+        self.softmax=torch.nn.Softmax(dim=1)
+    
+    def forward(self, x):
+        x=self.resnet(x)
+        if self.train_resnet is True:
+            x=self.softmax(x)
         else:
+            x = Sigmoid(x)
+        return x
+
+    def trigger_phase2(self):
+
+        if self.train_resnet is True:
+            self.train_resnet = False
+            
             #we keep the previous training of resnet
             # and add a new head that will output 1 class probability
             for param in self.resnet.parameters():
                 param.requires_grad=False
+            
             # the new head will be trained from scratch
             self.resnet.fc=torch.nn.Linear(self.resnet.fc.in_features,1)
 
-        self.softmax=torch.nn.Softmax(dim=1)
-    def forward(self, x):
-        x=self.resnet(x)
-        x=self.softmax(x)
-        return x
-    
+        else:
+            return
 
     def __str__(self):
         return f"ResnetTransfer(frozen={self.train_resnet}, output_size={self.resnet.fc.out_features})"
