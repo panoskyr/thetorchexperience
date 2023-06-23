@@ -5,6 +5,7 @@ from skimage.color import gray2rgb
 from torchvision import transforms,io
 import torchvision
 import torch
+import numpy as np
 from torch.nn import Sigmoid
 
 class NoneTransform:
@@ -107,9 +108,10 @@ class class2_Dataset(Dataset):
             self.transform = transform
         #mapping alphabetically
         self.labels = self.df['Label'].map({
-            'negative': 0,
-            'positive': 1
-        })
+            'negative': 0.0,
+            'positive': 1.0
+        }).astype(np.float32)
+        
         
     def __len__(self):
         return len(self.df)
@@ -226,3 +228,28 @@ class myEnsemble(torch.nn.Module):
         self.modelB.fc = None
         # Create new classifier
         self.classifier = torch.nn.Linear(2048+512, nb_classes)
+
+
+def get_loaders(train_df,dev_df,fraction,ds_name,transformation_dict,batch_size=128):
+    fraction=fraction
+    train_df=train_df
+    dev_df=dev_df
+    transformation_dict=transformation_dict
+    train_df=train_df.sample(frac=fraction)
+    dev_df=dev_df.sample(frac=fraction)
+    batch_size=batch_size
+
+
+
+    train_dataloader=DataLoader(ds_name(train_df, transform=transformation_dict['train_resnet']),
+                                batch_size=128,
+                                shuffle=True)
+    train_features_batch, train_labels_batch = next(iter(train_dataloader))
+    print(train_features_batch.shape,train_labels_batch.shape)
+
+    dev_dataloader=DataLoader(ds_name(dev_df, transform=transformation_dict['train_resnet']),
+                                batch_size=128,
+                                shuffle=True)
+    dev_features_batch,dev_labels_batch=next(iter(dev_dataloader))
+    print(dev_features_batch.shape,dev_labels_batch.shape)
+    return train_dataloader,dev_dataloader
