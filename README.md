@@ -20,6 +20,12 @@ The pic is already read as a Tensor
 
 3. [Transfer Learning from resnet ](https://pytorch.org/tutorials/beginner/transfer_learning_tutorial.html#finetuning-the-convnet), https://pytorch.org/vision/main/models/generated/torchvision.models.resnet18.html
 
+## Add before running in colab
+!pip install torchvision
+!pip install torcheval
+!git clone https://github.com/panoskyr/thetorchexperience.git
+%cd thetorchexperience
+
 # TODO
 ## Panagiotis
 Do we need weighted Accuracy even when having weighted loss?
@@ -30,6 +36,7 @@ Do we need weighted Accuracy even when having weighted loss?
 ## Nikos
 Description of Multiclass problem that makis said in class
 Maybe useful ? please check https://github.com/ChrisWu1997/MURA
+
 
 
 
