@@ -121,13 +121,13 @@ class ResnetTransfer(torch.nn.Module):
             param.requires_grad=True
             
         self.softmax=torch.nn.Softmax(dim=1)
-    
+        self.sigmoid=torch.nn.Sigmoid()
     def forward(self, x):
         x=self.resnet(x)
         if self.train_resnet is True:
             x=self.softmax(x)
         else:
-            x = Sigmoid(x)
+            x =self.sigmoid(x)
         return x
 
     def trigger_phase2(self):
