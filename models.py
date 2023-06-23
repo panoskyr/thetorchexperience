@@ -70,7 +70,7 @@ from PIL import Image
 class class6_Dataset(Dataset):
     def __init__(self, df, transform=None):
         self.df = df
-        self.transform = transform
+        self.transform=transform
         if self.transform is None:
             self.transform = ResNet18_Weights.DEFAULT.transforms()
         else:
@@ -85,7 +85,7 @@ class class6_Dataset(Dataset):
             'XR_SHOULDER': 5,
             'XR_WRIST': 6
         })
-        
+
     def __len__(self):
         return len(self.df)
 
