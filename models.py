@@ -69,6 +69,7 @@ from PIL import Image
 class class6_Dataset(Dataset):
     def __init__(self, df, transform=None):
         self.df = df
+        self.transform = transform
         if self.transform is None:
             self.transform = ResNet18_Weights.DEFAULT.transforms()
         else:
@@ -94,6 +95,33 @@ class class6_Dataset(Dataset):
         img=self.transform(pil_img)
         img=torchvision.transforms.functional.convert_image_dtype(img,torch.float32)
         return img, self.labels.iloc[idx]
+
+#dataset that outputs 0 is negative and 1 if positive
+class class2_Dataset(Dataset):
+    def __init__(self, df, transform=None):
+        self.df = df
+        self.transform = transform
+        if self.transform is None:
+            self.transform = ResNet18_Weights.DEFAULT.transforms()
+        else:
+            self.transform = transform
+        #mapping alphabetically
+        self.labels = self.df['Label'].map({
+            'negative': 0,
+            'positive': 1
+        })
+        
+    def __len__(self):
+        return len(self.df)
+
+    def __getitem__(self, idx):
+        path=self.df['path'].iloc[idx]
+        pil_img=Image.open(path).convert('RGB')
+        #print("pil_img shape:",pil_img.size,"pil_img mode:",pil_img.mode)
+        img=self.transform(pil_img)
+        img=torchvision.transforms.functional.convert_image_dtype(img,torch.float32)
+        return img, self.labels.iloc[idx]
+
 
 
 # a class that will train a neural network with a layer that will distinguish the type of images and 
