@@ -1,6 +1,6 @@
 # MURA
 
-
+Check out the final result at : https://www.kaggle.com/code/panagiotiskyrmpatsos/murakaggle
 # Coding hindrances
 1. if using torchvision.io.read_image one should not use ToTensor as a transformation
 The pic is already read as a Tensor
