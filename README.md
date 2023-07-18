@@ -2,7 +2,8 @@
 
 Check out the final result at : https://www.kaggle.com/code/panagiotiskyrmpatsos/murakaggle
 
-# Report[Deep_Learning_Report.pdf](https://github.com/panoskyr/thetorchexperience/files/12089357/Deep_Learning_Report.pdf)
+# Report
+[Deep_Learning_Report.pdf](https://github.com/panoskyr/thetorchexperience/files/12089357/Deep_Learning_Report.pdf)
 
 
 # Coding hindrances
